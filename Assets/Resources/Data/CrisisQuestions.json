@@ -1,0 +1,2005 @@
+{
+  "crisisType": "Double Trouble",
+  "questions": [
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "High inventory turnover is a sign of inefficiency.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Growth stocks often reinvest profits instead of paying dividends.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "Banks prefer lending to highly leveraged firms.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "Dividend yield is calculated using EPS.",
+      "answer": false
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Water boils at 100\u00b0C at sea level.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "An ETF trades like a stock on the exchange.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "The Sensex includes 500 companies.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "M&A deals always increase shareholder value.",
+      "answer": false
+    },
+    {
+      "question": "SWOT analysis includes internal and external factors.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "A hostile takeover is one without board approval.",
+      "answer": true
+    },
+    {
+      "question": "Bull markets are characterized by rising prices.",
+      "answer": true
+    },
+    {
+      "question": "Declining ROCE can indicate inefficiency.",
+      "answer": true
+    },
+    {
+      "question": "Due diligence is mandatory before acquisitions.",
+      "answer": true
+    },
+    {
+      "question": "The human body has four lungs.",
+      "answer": false
+    },
+    {
+      "question": "Higher P/E ratio always means a better investment.",
+      "answer": false
+    },
+    {
+      "question": "Loan-to-value ratio is irrelevant in home loans.",
+      "answer": false
+    },
+    {
+      "question": "The Great Wall of China is visible from space.",
+      "answer": false
+    },
+    {
+      "question": "A credit score above 800 is considered excellent.",
+      "answer": true
+    }
+  ]
+}
