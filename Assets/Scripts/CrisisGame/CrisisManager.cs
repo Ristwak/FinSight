@@ -41,158 +41,272 @@ public class CrisisManager : MonoBehaviour
     public int crisisLoss = 1;
     public float lossIntervalSeconds = 1f;
 
-    private List<CrisisQuestion> allQuestions = new List<CrisisQuestion>();
+    private List<CrisisQuestion> allQuestions = new();
     private Action onCompleteCallback;
 
-    private bool isCrisisActive = false;
-    private int totalCrisisLoss = 0;
-    private float lossTimer = 0f;
-    private int questionsAnswered = 0;
+    private bool isCrisisActive;
+    private int totalCrisisLoss;
+    private float lossTimer;
+    private int questionsAnswered;
 
-    void Start()
+    private void Start()
     {
-        loginPanel.SetActive(true);
-        homeUI.SetActive(false);
-        crisisPanel.SetActive(false);
+        if (loginPanel != null) loginPanel.SetActive(true);
+        if (homeUI != null) homeUI.SetActive(false);
+        if (crisisPanel != null) crisisPanel.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
-        if (!isCrisisActive) return;
+        if (!isCrisisActive)
+            return;
 
-        lossTimer += Time.deltaTime;
-        if (lossTimer >= lossIntervalSeconds)
+        if (levelLoader == null)
         {
-            lossTimer -= lossIntervalSeconds;
-
-            GameLoader.playerBalance -= crisisLoss;
-            totalCrisisLoss += crisisLoss;
-
-            if (GameLoader.playerBalance < 0)
-            {
-                if (levelLoader.bankTotal > 0)
-                {
-                    levelLoader.bankTotal -= crisisLoss;
-                    GameLoader.playerBalance = 0;
-                }
-                else
-                {
-                    // Game Over condition triggered
-                    GameLoader.playerBalance = 0;
-
-                    isCrisisActive = false;
-                    crisisPanel.SetActive(false);
-
-                    if (levelLoader != null && levelLoader.gameOverPanel != null)
-                    {
-                        homeUI.SetActive(false);
-                        levelLoader.homeUI.SetActive(false);
-                        levelLoader.gameUI.SetActive(false);
-                        levelLoader.gameOverPanel.SetActive(true);
-                        Debug.Log("💀 Game Over: Crisis caused total depletion of funds.");
-                        Time.timeScale = 0f;
-                    }
-
-                    return;
-                }
-            }
-
-            // ✅ Update visible UI balance and bank display
-            if (levelLoader.balanceText != null)
-                levelLoader.balanceText.text = GameLoader.playerBalance.ToString();
-
-            if (levelLoader.BankText != null)
-                levelLoader.BankText.text = levelLoader.bankTotal.ToString();
-
-            Debug.Log($"Crisis loss so far: {totalCrisisLoss}");
+            Debug.LogError("CrisisManager: LevelLoader reference is missing.");
+            FinishCrisis(true);
+            return;
         }
 
-        balanceText.text = $"-{totalCrisisLoss}";
+        lossTimer += Time.deltaTime;
+
+        float interval = Mathf.Max(0.05f, lossIntervalSeconds);
+
+        while (lossTimer >= interval && isCrisisActive)
+        {
+            lossTimer -= interval;
+            ApplyCrisisLoss();
+        }
+
+        if (balanceText != null)
+            balanceText.text = totalCrisisLoss.ToString();
+    }
+
+    private void ApplyCrisisLoss()
+    {
+        int amount = Mathf.Max(0, crisisLoss);
+
+        if (amount == 0)
+            return;
+
+        GameLoader.playerBalance -= amount;
+        totalCrisisLoss += amount;
+
+        if (GameLoader.playerBalance < 0)
+        {
+            int debt = Mathf.Abs(GameLoader.playerBalance);
+            int bankPayment = Mathf.Min(debt, levelLoader.bankTotal);
+
+            levelLoader.bankTotal -= bankPayment;
+            GameLoader.playerBalance += bankPayment;
+        }
+
+        if (levelLoader.balanceText != null)
+            levelLoader.balanceText.text = GameLoader.playerBalance.ToString();
+
+        if (levelLoader.BankText != null)
+            levelLoader.BankText.text = levelLoader.bankTotal.ToString();
+
+        if (GameLoader.playerBalance < 0 && levelLoader.bankTotal <= 0)
+        {
+            isCrisisActive = false;
+
+            if (crisisPanel != null)
+                crisisPanel.SetActive(false);
+
+            if (levelLoader.gameOverPanel != null)
+                levelLoader.gameOverPanel.SetActive(true);
+
+            if (levelLoader.homeUI != null)
+                levelLoader.homeUI.SetActive(false);
+
+            if (levelLoader.gameUI != null)
+                levelLoader.gameUI.SetActive(false);
+
+            if (homeUI != null)
+                homeUI.SetActive(false);
+
+            levelLoader.isGameOver = true;
+            Time.timeScale = 0f;
+
+            Debug.Log("Game Over: Crisis depleted the player's available funds.");
+        }
     }
 
     public void StartCrisis(Action onComplete)
     {
+        if (isCrisisActive)
+        {
+            Debug.LogWarning("A crisis is already active.");
+            return;
+        }
+
+        if (!LoadQuestionsFromJSON())
+        {
+            Debug.LogError("Crisis could not start because question data is unavailable.");
+            onComplete?.Invoke();
+            return;
+        }
+
+        if (crisisPanel == null || questionText == null ||
+            trueButton == null || falseButton == null)
+        {
+            Debug.LogError("CrisisManager UI references are incomplete.");
+            onComplete?.Invoke();
+            return;
+        }
+
         onCompleteCallback = onComplete;
-        LoadQuestionsFromJSON();
 
         questionsAnswered = 0;
         totalCrisisLoss = 0;
         lossTimer = 0f;
         isCrisisActive = true;
 
-        foreach (var panel in panelsToDisable)
-            if (panel != null) panel.SetActive(false);
+        foreach (GameObject panel in panelsToDisable)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
 
         crisisPanel.SetActive(true);
-
         ShowNextQuestion();
     }
 
-    void LoadQuestionsFromJSON()
+    private bool LoadQuestionsFromJSON()
     {
-        TextAsset jsonFile = Resources.Load<TextAsset>("Data/CrisisQuestions");
+        TextAsset jsonFile =
+            Resources.Load<TextAsset>("Data/CrisisQuestions");
+
         if (jsonFile == null)
         {
-            Debug.LogError("CrisisManager: JSON file not found.");
-            return;
+            Debug.LogError("CrisisQuestions JSON not found in Resources/Data.");
+            return false;
         }
 
-        CrisisQuestionData data = JsonUtility.FromJson<CrisisQuestionData>(jsonFile.text);
-        allQuestions = data.questions;
+        try
+        {
+            CrisisQuestionData data =
+                JsonUtility.FromJson<CrisisQuestionData>(jsonFile.text);
+
+            if (data == null || data.questions == null ||
+                data.questions.Count == 0)
+            {
+                Debug.LogError("CrisisQuestions JSON contains no questions.");
+                return false;
+            }
+
+            allQuestions = data.questions.FindAll(
+                q => q != null && !string.IsNullOrWhiteSpace(q.question)
+            );
+
+            return allQuestions.Count > 0;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError("Failed to parse crisis questions: " + exception.Message);
+            return false;
+        }
     }
 
-    void ShowNextQuestion()
+    private void ShowNextQuestion()
     {
-        if (questionsAnswered >= totalCrisisQuestions)
+        if (!isCrisisActive)
+            return;
+
+        if (questionsAnswered >= Mathf.Max(1, totalCrisisQuestions))
         {
             EndCrisis();
             return;
         }
 
-        var q = allQuestions[UnityEngine.Random.Range(0, allQuestions.Count)];
-        questionText.text = q.question;
+        if (allQuestions == null || allQuestions.Count == 0)
+        {
+            EndCrisis();
+            return;
+        }
+
+        CrisisQuestion question =
+            allQuestions[UnityEngine.Random.Range(0, allQuestions.Count)];
+
+        questionText.text = question.question;
 
         trueButton.onClick.RemoveAllListeners();
         falseButton.onClick.RemoveAllListeners();
 
-        trueButton.onClick.AddListener(() => HandleAnswer(true, q.answer));
-        falseButton.onClick.AddListener(() => HandleAnswer(false, q.answer));
+        trueButton.onClick.AddListener(
+            () => HandleAnswer(true, question.answer)
+        );
+
+        falseButton.onClick.AddListener(
+            () => HandleAnswer(false, question.answer)
+        );
     }
 
-    void HandleAnswer(bool selected, bool correct)
+    private void HandleAnswer(bool selected, bool correct)
     {
+        if (!isCrisisActive)
+            return;
+
         questionsAnswered++;
+
+        trueButton.interactable = false;
+        falseButton.interactable = false;
+
         ShowNextQuestion();
+
+        if (isCrisisActive)
+        {
+            trueButton.interactable = true;
+            falseButton.interactable = true;
+        }
     }
 
-    void EndCrisis()
+    private void EndCrisis()
+    {
+        FinishCrisis(true);
+    }
+
+    private void FinishCrisis(bool invokeCallback)
     {
         isCrisisActive = false;
-        crisisPanel.SetActive(false);
 
-        foreach (var panel in panelsToDisable)
-            if (panel != null) panel.SetActive(true);
+        if (crisisPanel != null)
+            crisisPanel.SetActive(false);
 
-        if (homeUI != null) homeUI.SetActive(true);
+        foreach (GameObject panel in panelsToDisable)
+        {
+            if (panel != null)
+                panel.SetActive(true);
+        }
+
+        if (homeUI != null)
+            homeUI.SetActive(true);
 
         if (graphUI != null)
         {
-            var graph = graphUI.GetComponent<AnimatedLineGraph>();
+            AnimatedLineGraph graph =
+                graphUI.GetComponent<AnimatedLineGraph>();
+
             if (graph != null)
-            {
-                graph.AddProfitPoint(GameLoader.playerBalance);  // Add latest balance after crisis
-            }
+                graph.AddProfitPoint(GameLoader.playerBalance);
         }
 
-        Debug.Log($"Crisis completed. Total profit lost: {totalCrisisLoss}");
+        Debug.Log($"Crisis completed. Total loss: {totalCrisisLoss}");
 
-        // ✅ If player is in debt, trigger borrow UI
+        Action callback = onCompleteCallback;
+        onCompleteCallback = null;
+
+        if (!invokeCallback)
+            return;
+
         if (GameLoader.playerBalance < 0 && levelLoader != null)
         {
-            levelLoader.TriggerBorrowPanel();  // <-- Must be public if not already
-            return; // Prevent auto-continuation
+            levelLoader.onBorrowCompleted = callback;
+            levelLoader.TriggerBorrowPanel();
+            return;
         }
 
-        onCompleteCallback?.Invoke(); // Only proceed if not in debt
+        callback?.Invoke();
     }
 }

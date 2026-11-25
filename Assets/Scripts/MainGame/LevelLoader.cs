@@ -1,8 +1,8 @@
-// Applied on GamePanelUI
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LevelLoader : MonoBehaviour
 {
@@ -47,8 +47,8 @@ public class LevelLoader : MonoBehaviour
     [Header("Timer Settings")]
     public float scenarioTimeLimit = 600f;
     private float remainingTime;
-    private bool timerRunning = false;
-    public bool isGameOver = false;
+    private bool timerRunning;
+    public bool isGameOver;
 
     [Header("Bank & Borrow")]
     public GameObject borrowPanel;
@@ -59,38 +59,63 @@ public class LevelLoader : MonoBehaviour
     public int[] borrowAmounts = { 10, 20, 30 };
     public int bankTotal = 100;
     private int bankTotalInStart;
-    private bool isBorrowing = false;
+    private bool isBorrowing;
     public AudioClip borrowSound;
 
     public List<LevelData> currentQuestionList;
-    private int currentQuestionIndexInLevel = 0;
+    private int currentQuestionIndexInLevel;
     private bool optionChosen;
     private bool allQuestionsCorrectInLevel = true;
+    private bool hasPendingAnswer;
+    private bool pendingAnswerCorrect;
+
+    public Action onBorrowCompleted;
 
     public GameLoader gameLoader;
 
-    void Awake()
+    private void Awake()
     {
         bankTotalInStart = bankTotal;
     }
 
-    void Start()
+    private void Start()
     {
-        gameUI.SetActive(true);
-        homeUI.SetActive(false);
-        roundOverUI.SetActive(false);
+        if (gameUI != null) gameUI.SetActive(true);
+        if (homeUI != null) homeUI.SetActive(false);
+        if (roundOverUI != null) roundOverUI.SetActive(false);
 
-        remainingTime = scenarioTimeLimit;
-        timerRunning = true;
+        remainingTime = Mathf.Max(0f, scenarioTimeLimit);
+        timerRunning = remainingTime > 0f;
 
         if (profitGraph != null)
         {
             profitGraph.ResetGraph();
-            foreach (int p in GameLoader.profitBalance)
-            {
-                // profitGraph.AddLevelProfit(p);
-                profitGraph.AddProfitPoint(p); // Add without animating
-            }
+
+            foreach (int value in GameLoader.profitBalance)
+                profitGraph.AddProfitPoint(value);
+        }
+
+        UpdateBalanceUI();
+    }
+
+    private void Update()
+    {
+        if (!timerRunning || isGameOver || isBorrowing)
+            return;
+
+        remainingTime -= Time.deltaTime;
+
+        if (timerText != null)
+        {
+            int minutes = Mathf.FloorToInt(Mathf.Max(0f, remainingTime) / 60f);
+            int seconds = Mathf.FloorToInt(Mathf.Max(0f, remainingTime) % 60f);
+            timerText.text = $"{minutes:00}:{seconds:00}";
+        }
+
+        if (remainingTime <= 0f)
+        {
+            timerRunning = false;
+            EndScenarioDueToTimeout();
         }
     }
 
@@ -99,246 +124,219 @@ public class LevelLoader : MonoBehaviour
         return bankTotal;
     }
 
-    void Update()
-    {
-        // if (roundOverUI.activeSelf) return; // Timer Paused during round over UI
-
-        if (timerRunning)
-        {
-            remainingTime -= Time.deltaTime;
-
-            int minutes = Mathf.FloorToInt(remainingTime / 60f);
-            int seconds = Mathf.FloorToInt(remainingTime % 60f);
-            timerText.text = $"{minutes:00}:{seconds:00}";
-
-            if (remainingTime <= 0f)
-            {
-                timerRunning = false;
-                Debug.Log("Time's up! Ending scenario.");
-                EndScenarioDueToTimeout();
-            }
-        }
-    }
-
     public void LoadLevel()
     {
-        CanvasGroup gameCanvas = gameUI.GetComponent<CanvasGroup>();
-        if (gameCanvas != null)
-        {
-            gameCanvas.alpha = 1f;
-            gameCanvas.interactable = true;
-            gameCanvas.blocksRaycasts = true;
-        }
+        if (isGameOver)
+            return;
 
-        if (GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
+        if (gameUI == null)
         {
-            Debug.LogError("No more levels in this scenario.");
+            Debug.LogError("GameUI reference is missing.");
             return;
         }
 
-        currentQuestionList = GameLoader.currentScenarioLevels[GameLoader.currentLevelIndex];
-        currentQuestionIndexInLevel = 0;
+        CanvasGroup canvas = gameUI.GetComponent<CanvasGroup>();
+        SetCanvasState(canvas, 1f, true);
 
+        if (GameLoader.currentLevelIndex < 0 ||
+            GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
+        {
+            Debug.LogError("Current level index is invalid.");
+            return;
+        }
+
+        currentQuestionList =
+            GameLoader.GetCurrentLevelQuestions();
+
+        if (currentQuestionList == null || currentQuestionList.Count == 0)
+        {
+            Debug.LogError("No questions available for this level.");
+            return;
+        }
+
+        currentQuestionIndexInLevel = 0;
+        allQuestionsCorrectInLevel = true;
         LoadQuestion();
     }
 
     public void LoadQuestion()
     {
-        // Ensure gameUI is fully visible and interactable
-        CanvasGroup gameCanvas = gameUI.GetComponent<CanvasGroup>();
-        if (gameCanvas != null)
-        {
-            gameCanvas.alpha = 1f;
-            gameCanvas.interactable = true;
-            gameCanvas.blocksRaycasts = true;
-        }
+        if (isGameOver || isBorrowing)
+            return;
+
+        if (gameUI == null || currentQuestionList == null)
+            return;
+
+        CanvasGroup canvas = gameUI.GetComponent<CanvasGroup>();
+        SetCanvasState(canvas, 1f, true);
 
         ClearPreviousUI();
         optionChosen = false;
 
         if (currentQuestionIndexInLevel >= currentQuestionList.Count)
         {
-            GameLoader.currentLevelIndex++;
-
-            if (GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
-            {
-                GameLoader.currentScenarioIndex++;
-                // GameLoader.currentLevelIndex = 0;
-
-                if (GameLoader.currentScenarioIndex >= GameLoader.allScenarios.Count)
-                {
-                    Debug.Log("Game Complete! Show summary screen.");
-                    return;
-                }
-
-                StartNewScenario();
-                return;
-            }
-
-            if (GameLoader.streakByLevel)
-            {
-                if (allQuestionsCorrectInLevel)
-                    GameLoader.currentStreak++;
-                else
-                    GameLoader.currentStreak = 0;
-
-                allQuestionsCorrectInLevel = true;
-            }
-
-            GoToHomeScreen();
+            CompleteCurrentLevel();
             return;
         }
 
         LevelData question = currentQuestionList[currentQuestionIndexInLevel];
 
-        scenarioText.text = GameLoader.currentScenarioName;
-        companyText.text = question.company;
-        sectorText.text = question.sector;
-        balanceText.text = GameLoader.playerBalance.ToString();
-        justificationText.text = question.justification;
-        BankText.text = bankTotal.ToString();
-        correctOptionText.text = "Correct Option: " + question.correct;
-
-        foreach (string statement in question.statements)
+        if (question == null)
         {
-            GameObject stmtObj = Instantiate(questionTextPrefab, questionTextParent);
-            Text stmtText = stmtObj.GetComponent<Text>();
-            stmtText.text = statement;
-            stmtText.fontSize = fontSize;
-            stmtText.color = fontColor;
-            stmtObj.GetComponent<RectTransform>().localPosition = new Vector2(30, 74);
-            stmtObj.GetComponent<RectTransform>().sizeDelta = new Vector2(692, 230);
+            Debug.LogError("Question data is missing.");
+            return;
         }
 
-        foreach (var row in question.table)
+        if (scenarioText != null)
+            scenarioText.text = GameLoader.currentScenarioName;
+
+        if (companyText != null)
+            companyText.text = question.company;
+
+        if (sectorText != null)
+            sectorText.text = question.sector;
+
+        if (justificationText != null)
+            justificationText.text = question.justification;
+
+        if (correctOptionText != null)
+            correctOptionText.text = "Correct Option: " + question.correct;
+
+        UpdateBalanceUI();
+
+        if (question.statements != null && questionTextParent != null)
         {
-            foreach (string cell in row.row)
+            foreach (string statement in question.statements)
             {
-                GameObject cellObj = Instantiate(cellPrefab, tableGrid);
-                cellObj.GetComponentInChildren<Text>().text = cell;
+                if (questionTextPrefab == null) break;
+
+                GameObject obj = Instantiate(questionTextPrefab, questionTextParent);
+                Text text = obj.GetComponent<Text>();
+
+                if (text != null)
+                {
+                    text.text = statement;
+                    text.fontSize = fontSize;
+                    text.color = fontColor;
+                }
+
+                RectTransform rect = obj.GetComponent<RectTransform>();
+                if (rect != null)
+                {
+                    rect.localPosition = new Vector2(30, 74);
+                    rect.sizeDelta = new Vector2(692, 230);
+                }
             }
+        }
+
+        if (question.table != null && tableGrid != null)
+        {
+            foreach (TableRow row in question.table)
+            {
+                if (row == null || row.row == null) continue;
+
+                foreach (string cell in row.row)
+                {
+                    if (cellPrefab == null) break;
+
+                    GameObject obj = Instantiate(cellPrefab, tableGrid);
+                    Text text = obj.GetComponentInChildren<Text>();
+
+                    if (text != null)
+                        text.text = cell;
+                }
+            }
+        }
+
+        if (question.options == null || question.options.Length == 0 ||
+            optionsParent == null || optionButtonPrefab == null)
+        {
+            Debug.LogError("Question options or option UI references are missing.");
+            return;
         }
 
         foreach (string option in question.options)
         {
-            GameObject btnObj = Instantiate(optionButtonPrefab, optionsParent);
-            btnObj.GetComponentInChildren<Text>().text = option;
+            GameObject obj = Instantiate(optionButtonPrefab, optionsParent);
+
+            Text text = obj.GetComponentInChildren<Text>();
+            if (text != null)
+                text.text = option;
+
+            Button button = obj.GetComponent<Button>();
+            if (button == null) continue;
+
             string selected = option;
-            btnObj.GetComponent<Button>().onClick.AddListener(() => HandleOptionSelected(selected, question));
-            soundManager.PlayButtonClick();
+            button.onClick.AddListener(
+                () => HandleOptionSelected(selected, question)
+            );
         }
     }
 
-    public void TriggerBorrowPanel()
+    private void HandleOptionSelected(string selected, LevelData question)
     {
-        isBorrowing = true;
-        borrowPanel.SetActive(true);
-        borrowOptionsPanel.SetActive(false);
-    }
+        if (optionChosen || isGameOver || isBorrowing)
+            return;
 
-    public void ShowBorrowOptions()
-    {
-        if (bankTotal == 0)
-        {
-            isGameOver = true;
-            borrowPanel.SetActive(false);
-            borrowOptionsPanel.SetActive(false);
-            homeUI.SetActive(false);
-            gameUI.SetActive(false);
-            gameOverPanel.SetActive(true);
-            Debug.Log("💀 Bank depleted. Game Over.");
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            borrowPanel.SetActive(false);
-            borrowOptionsPanel.SetActive(true);
-
-            // Set up borrow buttons
-            for (int i = 0; i < borrowOptionButtons.Length; i++)
-            {
-                int amount = borrowAmounts[i];
-                borrowOptionButtons[i].GetComponentInChildren<Text>().text = amount.ToString();
-                borrowOptionButtons[i].onClick.RemoveAllListeners();
-                borrowOptionButtons[i].onClick.AddListener(() => BorrowMoney(amount));
-            }
-
-            soundManager.PlayButtonClick();
-            quitButton.onClick.RemoveAllListeners();
-            quitButton.onClick.AddListener(() => QuitGame());
-        }
-    }
-
-    void BorrowMoney(int amount)
-    {
-        int finalAmount = amount;
-
-        // If bank has less than 10, give whatever is left
-        if (bankTotal < 10)
-        {
-            finalAmount = bankTotal;
-            bankTotal = 0;
-            GameLoader.playerBalance += finalAmount;
-            balanceText.text = GameLoader.playerBalance.ToString();
-            BankText.text = bankTotal.ToString();
-            borrowPanel.SetActive(false);
-            if (bankTotal == 0 && GameLoader.playerBalance < 4)
-            {
-                // Show Game Over if player is still in debt and bank is empty
-                isGameOver = true;
-                borrowPanel.SetActive(false);
-                borrowOptionsPanel.SetActive(false);
-                homeUI.SetActive(false);
-                gameUI.SetActive(false);
-                gameOverPanel.SetActive(true);
-                Time.timeScale = 0f;
-                Debug.Log("💀 Player couldn't recover. Bank empty. Game Over.");
-            }
-            Debug.Log($"Bank has less than ₹10. Giving remaining ₹{finalAmount} to player.");
-        }
-        if (bankTotal >= amount)
-        {
-            bankTotal -= amount;
-            AudioSource.PlayClipAtPoint(borrowSound, Camera.main.transform.position);
-            GameLoader.playerBalance += amount;
-            balanceText.text = GameLoader.playerBalance.ToString();
-            BankText.text = bankTotal.ToString();
-
-            if (GameLoader.playerBalance >= 0)
-            {
-                borrowPanel.SetActive(false);
-                borrowOptionsPanel.SetActive(false);
-                isBorrowing = false;
-            }
-        }
-        else if (bankTotal == 0 && GameLoader.playerBalance < 0)
-        {
-            // Show Game Over if player is still in debt and bank is empty
-            isGameOver = true;
-            borrowPanel.SetActive(false);
-            borrowOptionsPanel.SetActive(false);
-            homeUI.SetActive(false);
-            gameUI.SetActive(false);
-            gameOverPanel.SetActive(true);
-            Time.timeScale = 0f;
-            Debug.Log("💀 Player couldn't recover. Bank empty. Game Over.");
-        }
-    }
-
-    void HandleOptionSelected(string selected, LevelData question)
-    {
-        // if (optionChosen) return;
         optionChosen = true;
 
+        if (optionsParent != null)
+        {
+            foreach (Transform child in optionsParent)
+            {
+                Button button = child.GetComponent<Button>();
+                if (button != null)
+                    button.interactable = false;
+            }
+        }
+
         bool isCorrect = selected == question.correct;
-        int points = isCorrect ? profit : loss;
-        GameLoader.playerBalance += points;
+
+        GameLoader.playerBalance += isCorrect ? profit : loss;
+
+        pendingAnswerCorrect = isCorrect;
+        hasPendingAnswer = true;
+
         if (GameLoader.playerBalance < 0)
         {
             TriggerBorrowPanel();
-            return; // Stop here — wait for player to borrow
+            return;
         }
 
+        CompletePendingAnswer();
+    }
+
+    private void CompletePendingAnswer()
+    {
+        if (!hasPendingAnswer || isGameOver)
+            return;
+
+        bool isCorrect = pendingAnswerCorrect;
+
+        hasPendingAnswer = false;
+
+        UpdateStreak(isCorrect);
+
+        CanvasGroup canvas = gameUI != null
+            ? gameUI.GetComponent<CanvasGroup>()
+            : null;
+
+        SetCanvasState(canvas, 0.5f, false);
+
+        if (roundOverUI != null)
+            roundOverUI.SetActive(true);
+
+        if (resultTextRoundOver != null)
+            resultTextRoundOver.text = isCorrect ? "Correct!" : "Incorrect!";
+
+        if (balanceTextRoundOver != null)
+            balanceTextRoundOver.text = "Balance: " + GameLoader.playerBalance;
+
+        RecordProfitPoint();
+    }
+
+    private void UpdateStreak(bool isCorrect)
+    {
         if (GameLoader.streakByLevel)
         {
             if (!isCorrect)
@@ -346,40 +344,55 @@ public class LevelLoader : MonoBehaviour
         }
         else
         {
-            GameLoader.currentStreak = isCorrect ? GameLoader.currentStreak + 1 : 0;
-        }
-
-        // Disable and fade gameUI
-        CanvasGroup gameCanvas = gameUI.GetComponent<CanvasGroup>();
-        if (gameCanvas != null)
-        {
-            gameCanvas.interactable = false;
-            gameCanvas.blocksRaycasts = false;
-            gameCanvas.alpha = 0.5f; // Instantly fade to 0.5 (or use coroutine for smooth effect)
-        }
-
-        roundOverUI.SetActive(true);
-        resultTextRoundOver.text = isCorrect ? "Correct!" : "Incorrect!";
-        balanceTextRoundOver.text = "Balance: " + GameLoader.playerBalance;
-
-        if (profitGraph != null)
-        {
-            GameLoader.profitBalance.Add(GameLoader.playerBalance);
-            // AudioSource.PlayClipAtPoint(coinAddingSound, Camera.main.transform.position);
-            profitGraph.AddProfitPoint(GameLoader.playerBalance);
+            GameLoader.currentStreak =
+                isCorrect ? GameLoader.currentStreak + 1 : 0;
         }
     }
 
+    private void CompleteCurrentLevel()
+    {
+        if (GameLoader.streakByLevel)
+        {
+            GameLoader.currentStreak =
+                allQuestionsCorrectInLevel
+                    ? GameLoader.currentStreak + 1
+                    : 0;
+        }
+
+        allQuestionsCorrectInLevel = true;
+
+        GameLoader.currentLevelIndex++;
+
+        if (GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
+        {
+            GameLoader.currentScenarioIndex++;
+
+            if (!StartNewScenario())
+            {
+                EndGame();
+                return;
+            }
+        }
+
+        GoToHomeScreen();
+    }
 
     public void OnContinueButtonPressedInRoundOverPanel()
     {
-        soundManager.PlayButtonClick();
-        roundOverUI.SetActive(false);
-        CanvasGroup gameCanvas = gameUI.GetComponent<CanvasGroup>();
-        if (gameCanvas != null)
-        {
-            StartCoroutine(FadeCanvas(gameCanvas, 0.5f, 1f, 0.3f)); // Smooth fade back to full
-        }
+        if (isGameOver || isBorrowing)
+            return;
+
+        if (soundManager != null)
+            soundManager.PlayButtonClick();
+
+        if (roundOverUI != null)
+            roundOverUI.SetActive(false);
+
+        CanvasGroup canvas = gameUI != null
+            ? gameUI.GetComponent<CanvasGroup>()
+            : null;
+
+        SetCanvasState(canvas, 1f, true);
 
         currentQuestionIndexInLevel++;
 
@@ -389,188 +402,343 @@ public class LevelLoader : MonoBehaviour
         }
         else
         {
-            if (GameLoader.streakByLevel)
-            {
-                if (allQuestionsCorrectInLevel)
-                    GameLoader.currentStreak++;
-                else
-                    GameLoader.currentStreak = 0;
-
-                allQuestionsCorrectInLevel = true;
-            }
-
-            // bool advanced = GameLoader.AdvanceToNextLevel();
-            // Debug.Log("🔁 Level complete. AdvanceToNextLevel result: " + advanced);
-            // GoToHomeScreen();
-
-            GameLoader.currentLevelIndex++;
-
-            if (GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
-            {
-                GameLoader.currentScenarioIndex++;
-                GameLoader.currentLevelIndex = 0;
-
-                if (GameLoader.currentScenarioIndex >= GameLoader.allScenarios.Count)
-                {
-                    Debug.Log("Game Complete!");
-                    return;
-                }
-
-                StartNewScenario();
-            }
-
-            GoToHomeScreen();
+            CompleteCurrentLevel();
         }
     }
 
-    void GoToHomeScreen()
+    public void TriggerBorrowPanel()
     {
-        gameUI.SetActive(false);
-        homeUI.SetActive(true);
+        if (isGameOver) return;
 
-        DynamicLevelUI uiScript = homeUI.GetComponentInChildren<DynamicLevelUI>();
-        if (uiScript != null)
-        {
-            uiScript.RefreshButtons();
-        }
-        else
-        {
-            Debug.LogWarning("DynamicLevelUI script not found.");
-        }
+        isBorrowing = true;
+        timerRunning = false;
+
+        if (borrowPanel != null)
+            borrowPanel.SetActive(true);
+
+        if (borrowOptionsPanel != null)
+            borrowOptionsPanel.SetActive(false);
     }
 
-    void ClearPreviousUI()
+    public void ShowBorrowOptions()
     {
-        foreach (Transform child in tableGrid) Destroy(child.gameObject);
-        foreach (Transform child in questionTextParent) Destroy(child.gameObject);
-        foreach (Transform child in optionsParent) Destroy(child.gameObject);
-    }
+        if (!isBorrowing || isGameOver)
+            return;
 
-    void EndScenarioDueToTimeout()
-    {
-        GameLoader.currentScenarioIndex++;
-
-        if (GameLoader.currentScenarioIndex >= GameLoader.allScenarios.Count)
+        if (bankTotal <= 0)
         {
-            Debug.Log("Game Complete due to timeout.");
+            HandleGameOver();
             return;
         }
-        if (profitGraph != null)
+
+        if (borrowPanel != null)
+            borrowPanel.SetActive(false);
+
+        if (borrowOptionsPanel != null)
+            borrowOptionsPanel.SetActive(true);
+
+        if (borrowOptionButtons != null)
         {
-            GameLoader.profitBalance.Add(GameLoader.playerBalance); // No change, just reflect paused state
-            // profitGraph.AddLevelProfit(GameLoader.playerBalance);
-            profitGraph.AddProfitPoint(GameLoader.playerBalance); // Add without animating
+            for (int i = 0; i < borrowOptionButtons.Length; i++)
+            {
+                if (borrowOptionButtons[i] == null)
+                    continue;
+
+                if (borrowAmounts == null || i >= borrowAmounts.Length)
+                {
+                    borrowOptionButtons[i].interactable = false;
+                    continue;
+                }
+
+                int amount = borrowAmounts[i];
+
+                Text label = borrowOptionButtons[i].GetComponentInChildren<Text>();
+                if (label != null)
+                    label.text = Mathf.Min(amount, bankTotal).ToString();
+
+                borrowOptionButtons[i].onClick.RemoveAllListeners();
+                borrowOptionButtons[i].onClick.AddListener(
+                    () => BorrowMoney(amount)
+                );
+
+                borrowOptionButtons[i].interactable = amount > 0;
+            }
         }
 
-        StartNewScenario();
+        if (quitButton != null)
+        {
+            quitButton.onClick.RemoveAllListeners();
+            quitButton.onClick.AddListener(QuitGame);
+        }
+
+        if (soundManager != null)
+            soundManager.PlayButtonClick();
+    }
+
+    private void BorrowMoney(int amount)
+    {
+        if (!isBorrowing || isGameOver || amount <= 0 || bankTotal <= 0)
+            return;
+
+        int finalAmount = Mathf.Min(amount, bankTotal);
+
+        bankTotal -= finalAmount;
+        GameLoader.playerBalance += finalAmount;
+
+        if (borrowSound != null && Camera.main != null)
+            AudioSource.PlayClipAtPoint(borrowSound, Camera.main.transform.position);
+
+        UpdateBalanceUI();
+
+        if (GameLoader.playerBalance >= 0)
+        {
+            isBorrowing = false;
+            timerRunning = remainingTime > 0f;
+
+            if (borrowPanel != null)
+                borrowPanel.SetActive(false);
+
+            if (borrowOptionsPanel != null)
+                borrowOptionsPanel.SetActive(false);
+
+            if (hasPendingAnswer)
+            {
+                CompletePendingAnswer();
+            }
+            else
+            {
+                CanvasGroup canvas = gameUI != null
+                    ? gameUI.GetComponent<CanvasGroup>()
+                    : null;
+
+                SetCanvasState(canvas, 1f, true);
+
+                Action callback = onBorrowCompleted;
+                onBorrowCompleted = null;
+                callback?.Invoke();
+            }
+
+            return;
+        }
+
+        if (bankTotal <= 0)
+            HandleGameOver();
+    }
+
+    private void HandleGameOver()
+    {
+        isGameOver = true;
+        hasPendingAnswer = false;
+        onBorrowCompleted = null;
+        isBorrowing = false;
+        timerRunning = false;
+
+        if (borrowPanel != null) borrowPanel.SetActive(false);
+        if (borrowOptionsPanel != null) borrowOptionsPanel.SetActive(false);
+        if (homeUI != null) homeUI.SetActive(false);
+        if (gameUI != null) gameUI.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+
+        Time.timeScale = 0f;
+        Debug.Log("Game Over: Bank depleted while player remains in debt.");
+    }
+
+    private void UpdateBalanceUI()
+    {
+        if (balanceText != null)
+            balanceText.text = GameLoader.playerBalance.ToString();
+
+        if (BankText != null)
+            BankText.text = bankTotal.ToString();
+    }
+
+    private void RecordProfitPoint()
+    {
+        GameLoader.profitBalance.Add(GameLoader.playerBalance);
+
+        if (profitGraph != null)
+            profitGraph.AddProfitPoint(GameLoader.playerBalance);
+    }
+
+    private void GoToHomeScreen()
+    {
+        if (gameUI != null) gameUI.SetActive(false);
+        if (homeUI != null) homeUI.SetActive(true);
+
+        DynamicLevelUI ui = homeUI != null
+            ? homeUI.GetComponentInChildren<DynamicLevelUI>()
+            : null;
+
+        if (ui != null)
+            ui.RefreshButtons();
+    }
+
+    private void ClearPreviousUI()
+    {
+        ClearChildren(tableGrid);
+        ClearChildren(questionTextParent);
+        ClearChildren(optionsParent);
+    }
+
+    private void ClearChildren(Transform parent)
+    {
+        if (parent == null) return;
+
+        foreach (Transform child in parent)
+            Destroy(child.gameObject);
+    }
+
+    private bool StartNewScenario()
+    {
+        currentQuestionIndexInLevel = 0;
+        GameLoader.currentLevelIndex = 0;
+
+        if (!GameLoader.LoadNextScenario())
+            return false;
+
+        remainingTime = Mathf.Max(0f, scenarioTimeLimit);
+        timerRunning = remainingTime > 0f;
+
+        Debug.Log("New scenario started.");
+        return true;
+    }
+
+    private void EndScenarioDueToTimeout()
+    {
+        if (isGameOver) return;
+
+        RecordProfitPoint();
+
+        GameLoader.currentScenarioIndex++;
+
+        if (!StartNewScenario())
+        {
+            EndGame();
+            return;
+        }
+
         GoToHomeScreen();
     }
 
-    public void StartNewScenario()
+    private void EndGame()
     {
-        currentQuestionIndexInLevel = 0;
-        // GameLoader.InitializeSelectedQuestions();
-        GameLoader.currentLevelIndex = 0;
+        timerRunning = false;
+        isGameOver = true;
 
-        remainingTime = scenarioTimeLimit;
-        timerRunning = true;
-        GameLoader.LoadNextScenario();
-        Debug.Log("New scenario started. Timer reset.");
+        if (gameUI != null) gameUI.SetActive(false);
+        if (homeUI != null) homeUI.SetActive(false);
+
+        Debug.Log("All scenarios completed. Game finished.");
     }
 
     public void ResetGame()
     {
-        Debug.Log("🔄 ResetGame called: resetting all game data...");
+        Debug.Log("Resetting game...");
 
-        // Reset GameLoader static variables
-        GameLoader.currentScenarioIndex = 0;
-        GameLoader.currentLevelIndex = 0;
-        GameLoader.currentStreak = 0;
-        GameLoader.playerBalance = 0;
-
-        GameLoader.profitBalance.Clear();
-        GameLoader.currentScenarioLevels.Clear();
-        GameLoader.completedLevels.Clear();
-        GameLoader.remainingScenarioNames.Clear();
-        GameLoader.allScenarios.Clear();
-
-        // Clear UI state
-        DynamicLevelUI.completedLevels?.Clear();
-        DynamicLevelUI.failedLevels?.Clear();
-        DynamicLevelUI.timeoutLevels?.Clear();
-
-        // Reload JSON and first scenario
-        gameLoader.LoadJSON();
-        GameLoader.LoadNextScenario();
-
-        // Uodating Bank Amount
-        bankTotal = bankTotalInStart;
-
-        // Reset UI
-        foreach (GameObject panel in GameObject.FindGameObjectsWithTag("UIPanel"))
-            panel.SetActive(false);
-
-        if (GameLoader.Instance != null)
-        {
-            GameLoader.Instance.homeUIPanel.SetActive(true);
-            GameLoader.Instance.loginPanel?.SetActive(false);
-        }
-
-        // Reset Level Buttons
-        DynamicLevelUI ui = GameObject.FindObjectOfType<DynamicLevelUI>();
-        if (ui != null)
-        {
-            ui.RefreshButtons();
-        }
-
-        // Reset Profit Graph
-        AnimatedLineGraph graph = GameObject.FindObjectOfType<AnimatedLineGraph>();
-        if (graph != null)
-        {
-            graph.ResetGraph();
-            graph.AddProfitPoint(0);
-        }
-
-        // Reset Bank
-        LevelLoader levelLoader = GameObject.FindObjectOfType<LevelLoader>();
-        if (levelLoader != null)
-        {
-            levelLoader.bankTotal = 100; // or your default
-        }
-
-        // Resume time if paused
         Time.timeScale = 1f;
 
-        Debug.Log("✅ Game has been reset.");
+        isGameOver = false;
+        isBorrowing = false;
+        timerRunning = false;
+        optionChosen = false;
+        allQuestionsCorrectInLevel = true;
+        hasPendingAnswer = false;
+        pendingAnswerCorrect = false;
+        onBorrowCompleted = null;
+
+        currentQuestionIndexInLevel = 0;
+        currentQuestionList = null;
+
+        bankTotal = bankTotalInStart;
+
+        GameLoader.SoftResetGame();
+
+        if (gameLoader != null)
+            gameLoader.LoadJSON();
+        else if (GameLoader.Instance != null)
+            GameLoader.Instance.LoadJSON();
+
+        GameLoader.remainingScenarioNames.Clear();
+
+        foreach (string scenario in GameLoader.allScenarios.Keys)
+            GameLoader.remainingScenarioNames.Add(scenario);
+
+        GameLoader.LoadNextScenario();
+
+        if (DynamicLevelUI.completedLevels != null)
+            DynamicLevelUI.completedLevels.Clear();
+
+        if (DynamicLevelUI.failedLevels != null)
+            DynamicLevelUI.failedLevels.Clear();
+
+        if (DynamicLevelUI.timeoutLevels != null)
+            DynamicLevelUI.timeoutLevels.Clear();
+
+        if (borrowPanel != null) borrowPanel.SetActive(false);
+        if (borrowOptionsPanel != null) borrowOptionsPanel.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (roundOverUI != null) roundOverUI.SetActive(false);
+
+        if (homeUI != null) homeUI.SetActive(true);
+        if (gameUI != null) gameUI.SetActive(false);
+
+        if (profitGraph != null)
+        {
+            profitGraph.ResetGraph();
+            profitGraph.AddProfitPoint(0);
+        }
+
+        UpdateBalanceUI();
+
+        DynamicLevelUI ui = homeUI != null
+            ? homeUI.GetComponentInChildren<DynamicLevelUI>()
+            : null;
+
+        if (ui != null)
+            ui.RefreshButtons();
     }
 
-
-    IEnumerator FadeCanvas(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
+    private void SetCanvasState(CanvasGroup canvas, float alpha, bool interactable)
     {
-        float time = 0f;
-        canvasGroup.alpha = startAlpha;
+        if (canvas == null) return;
 
-        while (time < duration)
+        canvas.alpha = alpha;
+        canvas.interactable = interactable;
+        canvas.blocksRaycasts = interactable;
+    }
+
+    private IEnumerator FadeCanvas(
+        CanvasGroup canvas,
+        float startAlpha,
+        float endAlpha,
+        float duration)
+    {
+        if (canvas == null) yield break;
+
+        float elapsed = 0f;
+        canvas.alpha = startAlpha;
+
+        while (elapsed < duration)
         {
-            float t = time / duration;
-            canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, t);
-            time += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
+            canvas.alpha = Mathf.Lerp(
+                startAlpha,
+                endAlpha,
+                duration > 0f ? elapsed / duration : 1f
+            );
+
             yield return null;
         }
 
-        canvasGroup.alpha = endAlpha;
-
-        // Enable or disable interaction based on final alpha
-        canvasGroup.interactable = endAlpha == 1f;
-        canvasGroup.blocksRaycasts = endAlpha == 1f;
+        SetCanvasState(canvas, endAlpha, endAlpha >= 1f);
     }
 
     public void QuitGame()
     {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;  // Stop play mode in Editor
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
-        Application.Quit();  // Quit the app in build
+        Application.Quit();
 #endif
     }
 }
