@@ -1,61 +1,81 @@
-📈 FINSIGHT – Financial Simulation Game for MBA Students
-Developed in Unity
+# 📈 FINSIGHT — Financial Simulation Game
 
-🧠 Overview
-FINSIGHT is a scenario-based financial decision-making game designed for MBA and postgraduate students. It immerses players in real-world business situations where they must make strategic financial choices under pressure. The game helps build intuition for financial statements, risk handling, and profitability analysis through gamified learning.
+**Developed in Unity | Created and Owned by Ristwak Pandey**
 
-🎯 Learning Objectives
-Analyze companies using financial ratios and metrics
+## 🧠 Overview
 
-Understand the impacts of business decisions on profitability
+FINSIGHT is a scenario-based financial decision-making game designed for MBA and postgraduate students.
 
-Learn to navigate financial crises and market uncertainties
+The game immerses players in realistic business and financial situations where they must make strategic decisions under pressure. It helps develop an understanding of financial statements, risk management, profitability analysis, and business decision-making through interactive gameplay.
 
-Experience the pressure of time-bound decisions in dynamic scenarios
+FINSIGHT combines financial learning with time-based challenges, dynamic scenarios, and interactive visual feedback.
 
-Interpret cumulative profit trends via a real-time graph
+## 🎯 Learning Objectives
 
-🕹️ Gameplay Mechanics
-✅ Core Loop
-Select a scenario (e.g., VC Investment, Consumer Market)
+- Analyze businesses using financial ratios and performance metrics.
+- Understand the impact of business decisions on profitability.
+- Learn to navigate financial crises and market uncertainties.
+- Experience time-bound financial decision-making.
+- Interpret cumulative profit trends through real-time graph visualization.
 
-Each scenario has 4 levels, and each level contains 5 questions
+## 🕹️ Gameplay Mechanics
 
-Choose the best decision based on a company’s financial data
+### ✅ Core Gameplay Loop
 
-Earn profits on correct answers; wrong answers result in zero gain
+1. Select a financial scenario, such as VC Investment or Consumer Market.
+2. Progress through four levels within each scenario.
+3. Answer five questions in each level.
+4. Evaluate financial information and choose the most appropriate decision.
+5. Earn profits for correct answers; incorrect answers result in zero gain.
+6. Complete the scenario within a global timer of approximately 10–12 minutes.
 
-Progress through all levels within a global scenario timer (~10–12 minutes)
+### ⚠️ Crisis Mode — 15% Trigger Probability
 
-⚠️ Crisis Mode (15% Chance)
-Triggered randomly after levels
+Crisis Mode introduces unexpected financial challenges during gameplay.
 
-Includes a rapid-fire true/false round
+- Randomly triggered after levels.
+- Features rapid-fire True/False questions.
+- Profit decreases over time, rewarding quick and accurate decisions.
+- Crisis-related profit changes are reflected in the cumulative profit graph.
 
-Profit drains over time – speed and accuracy matter
+## 📈 Features
 
-Visually reflected in the profit graph as temporary dips
+- 📊 **Dynamic Profit Graph:** Real-time visualization of cumulative profit.
+- 💥 **Random Crisis Events:** Unexpected financial challenges and rapid decisions.
+- ⏱️ **Time-Based Gameplay:** Global scenario timer with pause and resume support.
+- 🧠 **Data-Driven Questions:** Financial scenarios and questions loaded dynamically through JSON files.
+- 🎮 **Interactive Game Flow:** Transitions between Home, Gameplay, and Crisis interfaces.
+- 🎨 **UI and Visual Feedback:** Interactive interface designed to support financial learning and engagement.
 
-📈 Features
-📊 Dynamic line graph for cumulative profit
+## 🔧 Technology Stack
 
-💥 Random Crisis Events with fast-paced decisions
+- **Game Engine:** Unity
+- **Programming Language:** C#
+- **UI Framework:** Unity UI and TextMeshPro
+- **Data Management:** JSON-based dynamic data loading
+- **Graph Visualization:** LineRenderer
+- **Gameplay Architecture:** Modular scenario and level handling
+- **Game Flow:** Scene-based navigation and panel transitions
 
-⏱️ Time-bound gameplay with pause/resume support
+## 👨‍💻 Ownership and Intellectual Property
 
-🧠 Financial data-driven questions using JSON level files
+FINSIGHT is an independently owned game project created by **Ristwak Pandey**.
 
-🎮 Smooth transitions between Home, Gameplay, and Crisis Panels
+I am the creator and owner of the original FINSIGHT game, including its original source code, gameplay logic, game systems, architecture, design, and original project content.
 
-🎨 UI optimized for both learning and engagement
+All intellectual property rights associated with my original work in this project are retained by me. No company, employer, or other organization is represented as the owner of this project through this repository.
 
-🔧 Tech Stack
-Unity (C#)
+Third-party software, libraries, packages, fonts, and assets, where used, remain subject to their respective licenses and ownership terms.
 
-TextMeshPro for UI
+## 📌 Project Information
 
-Scriptable Architecture for Level and Scenario Handling
+- **Project Name:** FINSIGHT
+- **Project Type:** Educational Financial Simulation Game
+- **Target Audience:** MBA and Postgraduate Students
+- **Engine:** Unity
+- **Language:** C#
+- **Project Status:** Developed in Unity
 
-JSON-based dynamic data loading
+---
 
-LineRenderer for financial graph visuals
+**Created and Owned by Ristwak Pandey.**
