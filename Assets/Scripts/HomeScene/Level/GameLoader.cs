@@ -1,18 +1,20 @@
-// Applied on GameManager
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
-using UnityEngine.SceneManagement;
 
 public class GameLoader : MonoBehaviour
 {
     [Header("UI Panels")]
     public GameObject loginPanel;
     public GameObject homeUIPanel;
+
     public static GameLoader Instance { get; private set; }
+
     public static Dictionary<string, List<LevelData>> allScenarios = new();
-    public static List<List<LevelData>> currentScenarioLevels = new(); // 4 levels of 5 questions each
+    public static List<List<LevelData>> currentScenarioLevels = new();
     public static List<string> remainingScenarioNames = new();
+
     public static string currentScenarioName = "";
 
     public static int currentScenarioIndex = 0;
@@ -23,105 +25,228 @@ public class GameLoader : MonoBehaviour
     public static int totalLevelsPerScenario = 4;
     public static int questionsPerLevel = 5;
 
-    public static List<int> profitBalance = new();  // Track profit over time for graph
-    public static HashSet<string> completedLevels = new();  // Prevent replays
+    public static List<int> profitBalance = new();
+    public static HashSet<string> completedLevels = new();
 
     [Header("Borrowing Settings")]
     public static int playerBalance = 0;
     public static int totalBorrowLimit = 100;
 
     [TextArea(5, 20)]
-    public string parsedJsonString;  // 👈 Viewable in Inspector
+    public string parsedJsonString;
 
-    public static JSONNode parsedJson { get; private set; } // Accessible elsewhere
+    public static JSONNode parsedJson { get; private set; }
 
     public LevelLoader levelLoader;
 
-    void Awake()
+    private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
 
+        if (loginPanel != null)
+            loginPanel.SetActive(true);
+        else
+            Debug.LogWarning("Login Panel is not assigned.");
 
-        loginPanel.SetActive(true);
         LoadJSON();
-        LoadNextScenario();
+
+        if (allScenarios.Count > 0)
+        {
+            if (!LoadNextScenario())
+                Debug.LogWarning("No valid scenarios available.");
+        }
+        else
+        {
+            Debug.LogError("No valid scenarios were loaded.");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public void LoadJSON()
     {
         TextAsset jsonFile = Resources.Load<TextAsset>("Data/Scenarios");
+
         if (jsonFile == null)
         {
-            Debug.LogError("JSON file not found in Resources/Data folder.");
+            Debug.LogError("JSON file not found at Resources/Data/Scenarios.");
             return;
         }
 
-        parsedJson = JSON.Parse(jsonFile.text);
-        Debug.Log("Printing parsedJson values" + parsedJson);
-        allScenarios.Clear();
-        remainingScenarioNames.Clear();
-
-        foreach (KeyValuePair<string, JSONNode> scenario in parsedJson)
+        try
         {
-            string key = scenario.Key;
-            remainingScenarioNames.Add(key);
+            parsedJsonString = jsonFile.text;
+            parsedJson = JSON.Parse(jsonFile.text);
 
-            var levelList = new List<LevelData>();
-            JSONArray levelsArray = scenario.Value as JSONArray;
-            if (levelsArray == null)
+            if (parsedJson == null || !parsedJson.IsObject)
             {
-                Debug.LogError($"❌ Scenario '{key}' is not a JSON array.");
-                continue;
+                Debug.LogError("Invalid JSON: Root must be a JSON object.");
+                return;
             }
 
-            foreach (JSONNode levelNode in levelsArray)
+            allScenarios.Clear();
+            remainingScenarioNames.Clear();
+
+            foreach (KeyValuePair<string, JSONNode> scenario in parsedJson)
             {
-                JSONArray rawOptions = levelNode["options"].AsArray;
-                string[] cleanedOptions = new string[rawOptions.Count];
-                for (int i = 0; i < rawOptions.Count; i++)
+                string scenarioName = scenario.Key;
+                JSONNode scenarioNode = scenario.Value;
+
+                if (scenarioNode == null || !scenarioNode.IsArray)
                 {
-                    cleanedOptions[i] = RemoveSpecialCharacters(rawOptions[i]);
+                    Debug.LogWarning(
+                        $"Skipping scenario '{scenarioName}': Invalid scenario array."
+                    );
+                    continue;
                 }
 
-                LevelData level = new LevelData
-                {
-                    company = levelNode["company"],
-                    sector = levelNode["sector"],
-                    statements = levelNode["statements"].AsArray.ToStringArray(),
-                    options = cleanedOptions,
-                    correct = levelNode["correct"],
-                    justification = levelNode["justification"]
-                };
+                List<LevelData> levelList = new List<LevelData>();
 
-                // Table parsing remains unchanged
-                JSONArray tableArray = levelNode["table"].AsArray;
-                level.table = new TableRow[tableArray.Count];
-                for (int i = 0; i < tableArray.Count; i++)
+                foreach (JSONNode levelNode in scenarioNode.AsArray)
                 {
-                    JSONArray rowArray = tableArray[i]["row"].AsArray;
-                    TableRow row = new TableRow { row = new string[rowArray.Count] };
-                    for (int k = 0; k < rowArray.Count; k++)
+                    if (!TryParseLevel(levelNode, out LevelData level))
                     {
-                        row.row[k] = rowArray[k];
+                        Debug.LogWarning(
+                            $"Skipping invalid question in scenario '{scenarioName}'."
+                        );
+                        continue;
                     }
-                    level.table[i] = row;
+
+                    levelList.Add(level);
                 }
 
-                levelList.Add(level);
+                int requiredQuestions = totalLevelsPerScenario * questionsPerLevel;
+
+                if (levelList.Count < requiredQuestions)
+                {
+                    Debug.LogWarning(
+                        $"Skipping scenario '{scenarioName}'. " +
+                        $"Required: {requiredQuestions}, Available: {levelList.Count}."
+                    );
+                    continue;
+                }
+
+                allScenarios[scenarioName] = levelList;
+                remainingScenarioNames.Add(scenarioName);
+
+                Debug.Log(
+                    $"Loaded scenario '{scenarioName}' with {levelList.Count} questions."
+                );
             }
 
+            Debug.Log($"Total valid scenarios loaded: {allScenarios.Count}");
+        }
+        catch (Exception exception)
+        {
+            allScenarios.Clear();
+            remainingScenarioNames.Clear();
 
-            allScenarios[key] = levelList;
-            Debug.Log($"📦 Loaded scenario '{key}' with {levelList.Count} levels.");
+            Debug.LogError(
+                $"Failed to load scenario JSON: {exception.Message}"
+            );
+        }
+    }
+
+    private bool TryParseLevel(JSONNode levelNode, out LevelData level)
+    {
+        level = null;
+
+        if (levelNode == null || !levelNode.IsObject)
+            return false;
+
+        JSONNode optionsNode = levelNode["options"];
+        JSONNode statementsNode = levelNode["statements"];
+        JSONNode tableNode = levelNode["table"];
+
+        if (optionsNode == null || !optionsNode.IsArray ||
+            statementsNode == null || !statementsNode.IsArray)
+        {
+            return false;
         }
 
-        Debug.Log("Scenarios loaded: " + allScenarios.Count);
+        if (optionsNode.AsArray.Count == 0 ||
+            statementsNode.AsArray.Count == 0)
+        {
+            return false;
+        }
 
+        string correct = levelNode["correct"].Value;
+
+        if (string.IsNullOrWhiteSpace(correct))
+            return false;
+
+        string[] options = new string[optionsNode.AsArray.Count];
+
+        for (int i = 0; i < options.Length; i++)
+        {
+            options[i] = RemoveSpecialCharacters(
+                optionsNode.AsArray[i].Value
+            );
+        }
+
+        string[] statements = new string[statementsNode.AsArray.Count];
+
+        for (int i = 0; i < statements.Length; i++)
+        {
+            statements[i] = statementsNode.AsArray[i].Value;
+        }
+
+        TableRow[] tableRows = new TableRow[0];
+
+        if (tableNode != null && tableNode.IsArray)
+        {
+            tableRows = new TableRow[tableNode.AsArray.Count];
+
+            for (int i = 0; i < tableRows.Length; i++)
+            {
+                JSONNode rowNode = tableNode.AsArray[i]["row"];
+
+                if (rowNode == null || !rowNode.IsArray)
+                    return false;
+
+                string[] rowData = new string[rowNode.AsArray.Count];
+
+                for (int j = 0; j < rowData.Length; j++)
+                {
+                    rowData[j] = rowNode.AsArray[j].Value;
+                }
+
+                tableRows[i] = new TableRow
+                {
+                    row = rowData
+                };
+            }
+        }
+
+        level = new LevelData
+        {
+            company = levelNode["company"].Value,
+            sector = levelNode["sector"].Value,
+            statements = statements,
+            options = options,
+            correct = correct,
+            justification = levelNode["justification"].Value,
+            table = tableRows
+        };
+
+        return true;
     }
 
     public static string RemoveSpecialCharacters(string input)
     {
-        // Remove [ ] ` '
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
         return input.Replace("[", "")
                     .Replace("]", "")
                     .Replace("`", "")
@@ -131,114 +256,145 @@ public class GameLoader : MonoBehaviour
 
     public static bool LoadNextScenario()
     {
-        if (remainingScenarioNames.Count == 0)
-        {
-            Debug.Log("🎉 All scenarios completed!");
-            return false;
-        }
-
-        // Pick a random scenario
-        int randIndex = Random.Range(0, remainingScenarioNames.Count);
-        currentScenarioName = remainingScenarioNames[randIndex];
-        remainingScenarioNames.RemoveAt(randIndex);
-
-        Debug.Log($"🧠 LoadNextScenario() called. Remaining: {remainingScenarioNames.Count}");
-        Debug.Log($"➡️ Switching to scenario: {currentScenarioName}");
-
-        currentLevelIndex = 0;
         currentScenarioLevels.Clear();
+        currentLevelIndex = 0;
 
-        List<LevelData> pool = allScenarios[currentScenarioName];
-        if (pool.Count < totalLevelsPerScenario * questionsPerLevel)
+        if (totalLevelsPerScenario <= 0 || questionsPerLevel <= 0)
         {
-            Debug.LogError("❌ Not enough questions in scenario: " + currentScenarioName);
+            Debug.LogError("Invalid scenario configuration.");
+            currentScenarioName = string.Empty;
             return false;
         }
 
-        // Shuffle and slice
-        List<LevelData> shuffled = new List<LevelData>(pool);
-        for (int i = 0; i < shuffled.Count; i++)
-        {
-            int rnd = Random.Range(i, shuffled.Count);
-            (shuffled[i], shuffled[rnd]) = (shuffled[rnd], shuffled[i]);
-        }
+        int requiredQuestions = totalLevelsPerScenario * questionsPerLevel;
 
-        for (int i = 0; i < totalLevelsPerScenario; i++)
+        while (remainingScenarioNames.Count > 0)
         {
-            List<LevelData> level = new();
-            for (int j = 0; j < questionsPerLevel; j++)
+            int randomIndex = Random.Range(0, remainingScenarioNames.Count);
+            string selectedScenario = remainingScenarioNames[randomIndex];
+
+            if (!allScenarios.TryGetValue(selectedScenario, out List<LevelData> pool) ||
+                pool == null || pool.Count < requiredQuestions)
             {
-                level.Add(shuffled[i * questionsPerLevel + j]);
+                Debug.LogWarning($"Skipping invalid scenario: {selectedScenario}");
+                remainingScenarioNames.RemoveAt(randomIndex);
+                continue;
             }
-            currentScenarioLevels.Add(level);
+
+            remainingScenarioNames.RemoveAt(randomIndex);
+            currentScenarioName = selectedScenario;
+
+            List<LevelData> shuffled = new List<LevelData>(pool);
+
+            // Fisher-Yates shuffle.
+            for (int i = shuffled.Count - 1; i > 0; i--)
+            {
+                int randomIndexToSwap = Random.Range(0, i + 1);
+
+                (shuffled[i], shuffled[randomIndexToSwap]) =
+                    (shuffled[randomIndexToSwap], shuffled[i]);
+            }
+
+            for (int i = 0; i < totalLevelsPerScenario; i++)
+            {
+                List<LevelData> level = new List<LevelData>();
+
+                for (int j = 0; j < questionsPerLevel; j++)
+                {
+                    int questionIndex = i * questionsPerLevel + j;
+                    level.Add(shuffled[questionIndex]);
+                }
+
+                currentScenarioLevels.Add(level);
+            }
+
+            Debug.Log(
+                $"Loaded scenario: {currentScenarioName}. " +
+                $"Remaining: {remainingScenarioNames.Count}"
+            );
+
+            return true;
         }
 
-        Debug.Log($"🚀 Loaded scenario: {currentScenarioName} ({allScenarios.Count - remainingScenarioNames.Count}/{allScenarios.Count})");
-        Debug.Log("Remaining scenarios: " + string.Join(", ", remainingScenarioNames));
-        return true;
+        currentScenarioName = string.Empty;
+        Debug.Log("All valid scenarios have been completed.");
+
+        return false;
     }
 
     public static List<LevelData> GetCurrentLevelQuestions()
     {
-        if (currentLevelIndex < currentScenarioLevels.Count)
-            return currentScenarioLevels[currentLevelIndex];
-        else
+        if (currentScenarioLevels == null ||
+            currentLevelIndex < 0 ||
+            currentLevelIndex >= currentScenarioLevels.Count)
+        {
+            Debug.LogWarning("Current level index is invalid.");
             return new List<LevelData>();
-    }
-    
-    // public void ResetStatics()
-    // {
-    //     currentScenarioIndex = 0;
-    //     currentLevelIndex = 0;
-    //     currentStreak = 0;
-    //     playerBalance = 0;
-    //     profitBalance.Clear();
-    //     currentScenarioLevels.Clear();
-    //     remainingScenarioNames.Clear();
-    //     allScenarios.Clear();
+        }
 
-    //     DynamicLevelUI.completedLevels?.Clear();
-    //     DynamicLevelUI.failedLevels?.Clear();
-    //     DynamicLevelUI.timeoutLevels?.Clear();
-    // }
+        return currentScenarioLevels[currentLevelIndex];
+    }
 
     public static void SoftResetGame()
     {
         currentScenarioIndex = 0;
         currentLevelIndex = 0;
+        currentScenarioName = string.Empty;
+
         playerBalance = 0;
         currentStreak = 0;
+
         profitBalance.Clear();
         currentScenarioLevels.Clear();
         completedLevels.Clear();
+
+        // Restore all valid scenarios for a fresh run.
+        remainingScenarioNames.Clear();
+
+        foreach (string scenarioName in allScenarios.Keys)
+        {
+            remainingScenarioNames.Add(scenarioName);
+        }
+
         Debug.Log("Game soft reset to initial state.");
     }
 
     public static string GetScenarioNameByIndex(int index)
     {
-        int i = 0;
-        foreach (var kvp in allScenarios)
+        if (index < 0 || index >= allScenarios.Count)
         {
-            if (i == index)
-                return kvp.Key;
-            i++;
+            Debug.LogError("Scenario index out of range.");
+            return string.Empty;
         }
-        Debug.LogError("Scenario index out of range.");
-        return "";
-    }
 
+        int currentIndex = 0;
+
+        foreach (string scenarioName in allScenarios.Keys)
+        {
+            if (currentIndex == index)
+                return scenarioName;
+
+            currentIndex++;
+        }
+
+        return string.Empty;
+    }
 }
 
-// Helper for converting JSONArray to string[]
 public static class JSONArrayExtensions
 {
     public static string[] ToStringArray(this JSONArray array)
     {
+        if (array == null)
+            return new string[0];
+
         string[] result = new string[array.Count];
+
         for (int i = 0; i < array.Count; i++)
         {
-            result[i] = array[i];
+            result[i] = array[i].Value;
         }
+
         return result;
     }
 }

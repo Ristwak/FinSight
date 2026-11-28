@@ -1,9 +1,7 @@
-// Applied on LevelButtonContainer in HomeUIPanel
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 using System.Collections;
-using TMPro;
+using System.Collections.Generic;
 
 public class DynamicLevelUI : MonoBehaviour
 {
@@ -31,161 +29,176 @@ public class DynamicLevelUI : MonoBehaviour
     public const int pageSize = 7;
 
     [Header("Game Data")]
-    public float crisisProbability = 0.15f;
-    public float warProbability = 0f;
+    [Range(0f, 1f)] public float crisisProbability = 0.15f;
+    [Range(0f, 1f)] public float warProbability = 0f;
 
     public static HashSet<string> completedLevels = new();
     public static HashSet<string> failedLevels = new();
     public static HashSet<string> timeoutLevels = new();
 
     public SoundManager soundManager;
-    private List<Button> generatedButtons = new();
-    private int currentStartIndex = 0;
-    public bool waitingForCrisis = false;
 
-    void Start()
+    private readonly List<Button> generatedButtons = new();
+    private int currentStartIndex;
+    private bool isTransitioning;
+
+    public bool waitingForCrisis;
+
+    private void Start()
     {
-        homeUI.SetActive(true);
-        gameUI.SetActive(false);
+        if (homeUI != null) homeUI.SetActive(true);
+        if (gameUI != null) gameUI.SetActive(false);
 
-        leftArrowButton.onClick.AddListener(() =>
-        {
-            soundManager.PlayButtonClick();
-            PrevPage();
-        });
+        if (leftArrowButton != null)
+            leftArrowButton.onClick.AddListener(() =>
+            {
+                PlayClick();
+                PrevPage();
+            });
 
-        rightArrowButton.onClick.AddListener(() =>
-        {
-            soundManager.PlayButtonClick();
-            NextPage();
-        });
+        if (rightArrowButton != null)
+            rightArrowButton.onClick.AddListener(() =>
+            {
+                PlayClick();
+                NextPage();
+            });
 
-        continueButton.onClick.AddListener(() =>
-        {
-            soundManager.PlayButtonClick();
-            ContinueButtonHandler();
-        });
+        if (continueButton != null)
+            continueButton.onClick.AddListener(ContinueButtonHandler);
+
         StartCoroutine(DelayedCreateButtons());
     }
 
-    IEnumerator DelayedCreateButtons()
+    private IEnumerator DelayedCreateButtons()
     {
         yield return new WaitForEndOfFrame();
-        CreateButtons();
-        ShowPage(currentStartIndex);
+        RefreshButtons();
     }
 
-    string GetLevelKey(int scenarioIndex, int levelIndex)
+    private void PlayClick()
+    {
+        if (soundManager != null)
+            soundManager.PlayButtonClick();
+    }
+
+    private string GetLevelKey(int scenarioIndex, int levelIndex)
     {
         return $"{scenarioIndex}-{levelIndex}";
     }
 
-    void CreateButtons()
+    private void CreateButtons()
     {
-        int totalScenarios = GameLoader.allScenarios.Count;
-        int totalLevelsPerScenario = GameLoader.totalLevelsPerScenario;
-        int totalLevels = totalScenarios * totalLevelsPerScenario;
+        if (levelButtonPrefab == null || levelButtonContainer == null)
+        {
+            Debug.LogError("DynamicLevelUI: Button prefab or container is missing.");
+            return;
+        }
+
+        int scenarioCount = GameLoader.allScenarios.Count;
+        int levelsPerScenario = GameLoader.totalLevelsPerScenario;
+
+        if (levelsPerScenario <= 0 || scenarioCount <= 0)
+            return;
+
+        int totalLevels = scenarioCount * levelsPerScenario;
 
         for (int i = 0; i < totalLevels; i++)
         {
-            GameObject btnObj = Instantiate(levelButtonPrefab, levelButtonContainer);
-            Image btnImage = btnObj.GetComponent<Image>();
-            if (btnImage != null)
-                btnImage.sprite = levelButtonsSprites[i % levelButtonsSprites.Length];
+            GameObject obj = Instantiate(levelButtonPrefab, levelButtonContainer);
 
-            Button btn = btnObj.GetComponent<Button>();
-            Text label = btnObj.GetComponentInChildren<Text>();
-            if (label != null) label.text = $"Level \n{i + 1}";
+            Image image = obj.GetComponent<Image>();
+            if (image != null && levelButtonsSprites != null &&
+                levelButtonsSprites.Length > 0)
+            {
+                image.sprite = levelButtonsSprites[i % levelButtonsSprites.Length];
+            }
 
-            // 👇 Add this line to find the lock image (assuming it's named "LockImage")
-            Transform lockImageTransform = btnObj.transform.Find("LockImage");
-            bool hasLockImage = lockImageTransform != null;
+            Button button = obj.GetComponent<Button>();
+            if (button == null)
+            {
+                Debug.LogWarning("Level button prefab has no Button component.");
+                continue;
+            }
 
-            int index = i;
+            Text label = obj.GetComponentInChildren<Text>();
+            if (label != null)
+                label.text = $"Level\n{i + 1}";
 
-            // Compute scenario and level index
-            int scenarioIndex = index / totalLevelsPerScenario;
-            int levelIndex = index % totalLevelsPerScenario;
+            int scenarioIndex = i / levelsPerScenario;
+            int levelIndex = i % levelsPerScenario;
 
             string key = GetLevelKey(scenarioIndex, levelIndex);
+
             bool isCompleted = completedLevels.Contains(key);
-            bool isUnlocked = scenarioIndex < GameLoader.currentScenarioIndex ||
-                            (scenarioIndex == GameLoader.currentScenarioIndex && levelIndex <= GameLoader.currentLevelIndex);
+            bool isFailed = failedLevels.Contains(key);
+            bool isTimedOut = timeoutLevels.Contains(key);
 
+            int currentFlatIndex =
+                GameLoader.currentScenarioIndex * levelsPerScenario +
+                GameLoader.currentLevelIndex;
 
-            // If completed, it should no longer be interactable
-            // Only the current level should be interactable
-            int flatIndex = scenarioIndex * GameLoader.totalLevelsPerScenario + levelIndex;
-            int currentFlatIndex = GameLoader.currentScenarioIndex * GameLoader.totalLevelsPerScenario + GameLoader.currentLevelIndex;
+            bool isCurrent = i == currentFlatIndex;
+            bool isUnlocked = i <= currentFlatIndex;
 
-            bool isCurrent = flatIndex == currentFlatIndex;
+            button.interactable = isCurrent && !isTransitioning;
 
-            btn.interactable = isCurrent;
-
-
-            if (btnImage != null)
+            if (image != null)
             {
-                // Current Active Level
-                if (scenarioIndex == GameLoader.currentScenarioIndex && levelIndex == GameLoader.currentLevelIndex)
-                {
-                    btnImage.color = currentLevelColor;
-                    Color labelColor = Color.white;
-                    label.color = labelColor;
-                }
-                // Failed Levels
-                else if (failedLevels.Contains(key) || timeoutLevels.Contains(key))
-                {
-                    btnImage.color = failedLevelColor;
-                    Color labelColor = Color.white;
-                    label.color = labelColor;
-                }
-                // Revist and Complete Levels
-                else if (completedLevels.Contains(key))
-                {
-                    btnImage.color = revisitedAndPassedColor;
-                    Color labelColor = Color.white;
-                    label.color = labelColor;
-                }
-                // Passed Levels
+                if (isCurrent)
+                    image.color = currentLevelColor;
+                else if (isFailed)
+                    image.color = failedLevelColor;
+                else if (isTimedOut)
+                    image.color = timeOutLevelColor;
+                else if (isCompleted)
+                    image.color = revisitedAndPassedColor;
                 else if (isUnlocked)
-                {
-                    btnImage.color = passedLevelColor;
-                    Color labelColor = Color.white;
-                    label.color = labelColor;
-                }
-            }
-            // 👇 Lock logic
-            if (hasLockImage)
-            {
-                lockImageTransform.gameObject.SetActive(!isUnlocked);
+                    image.color = passedLevelColor;
+                else
+                    image.color = lockedLevelColor;
             }
 
+            Transform lockImage = obj.transform.Find("LockImage");
+            if (lockImage != null)
+                lockImage.gameObject.SetActive(!isUnlocked);
 
-            btn.onClick.AddListener(() =>
+            if (label != null && (isCurrent || isCompleted))
+                label.color = Color.white;
+
+            button.onClick.AddListener(() =>
             {
-                if (scenarioIndex == GameLoader.currentScenarioIndex && levelIndex == GameLoader.currentLevelIndex)
-                {
-                    soundManager.PlayButtonClick();
-                    // StartSelectedLevel();
-                }
+                if (isCurrent && !isTransitioning)
+                    PlayClick();
             });
 
-            generatedButtons.Add(btn);
+            generatedButtons.Add(button);
         }
     }
 
-    void ShowPage(int startIndex)
+    private void ShowPage(int startIndex)
     {
+        if (startIndex < 0)
+            startIndex = 0;
+
         for (int i = 0; i < generatedButtons.Count; i++)
         {
-            generatedButtons[i].gameObject.SetActive(i >= startIndex && i < startIndex + pageSize);
+            if (generatedButtons[i] != null)
+            {
+                generatedButtons[i].gameObject.SetActive(
+                    i >= startIndex && i < startIndex + pageSize
+                );
+            }
         }
 
-        leftArrowButton.interactable = startIndex > 0;
-        rightArrowButton.interactable = startIndex + pageSize < generatedButtons.Count;
+        if (leftArrowButton != null)
+            leftArrowButton.interactable = startIndex > 0;
+
+        if (rightArrowButton != null)
+            rightArrowButton.interactable =
+                startIndex + pageSize < generatedButtons.Count;
     }
 
-    void NextPage()
+    private void NextPage()
     {
         if (currentStartIndex + pageSize < generatedButtons.Count)
         {
@@ -194,7 +207,7 @@ public class DynamicLevelUI : MonoBehaviour
         }
     }
 
-    void PrevPage()
+    private void PrevPage()
     {
         if (currentStartIndex - pageSize >= 0)
         {
@@ -203,116 +216,147 @@ public class DynamicLevelUI : MonoBehaviour
         }
     }
 
-    void ContinueButtonHandler()
+    private void ContinueButtonHandler()
     {
-        soundManager.PlayButtonClick();
-        if (waitingForCrisis)
+        if (isTransitioning || waitingForCrisis)
+            return;
+
+        if (GameLoader.currentScenarioLevels.Count == 0 ||
+            GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
         {
-            Debug.LogWarning("Already waiting for a crisis or war event.");
+            Debug.LogWarning("No active level is available.");
+            return;
         }
 
+        PlayClick();
 
-        float rand = Random.value;
+        isTransitioning = true;
+        SetNavigationInteractable(false);
 
-        if (rand <= crisisProbability)
+        if (Random.value <= Mathf.Clamp01(crisisProbability))
         {
-            waitingForCrisis = true;
+            bool triggerWar = Random.value <= Mathf.Clamp01(warProbability);
 
-            bool triggerCrisis = Random.value <= warProbability;
-
-            if (triggerCrisis)
-            {
-                Debug.Log("Crisis triggered!");
-                var crisisManager = FindObjectOfType<CrisisManager>();
-                if (crisisManager != null)
-                {
-                    soundManager.StartCrisisLoop();
-                    crisisManager.StartCrisis(() =>
-                    {
-                        waitingForCrisis = false;
-                        soundManager.StopCrisisLoop();
-
-                        // 💰 Update the graph and balance
-                        AnimatedLineGraph graph = FindObjectOfType<AnimatedLineGraph>();
-                        if (graph != null)
-                        {
-                            graph.AddProfitPoint(GameLoader.playerBalance); // assumes playerProfit already updated by crisis
-                        }
-
-                        // 🧾 Show borrow panel if needed
-                        LevelLoader levelLoader = FindObjectOfType<LevelLoader>();
-                        if (levelLoader != null && GameLoader.playerBalance < 0)
-                        {
-                            levelLoader.TriggerBorrowPanel(); // ⬅️ Make sure this method exists in your LevelLoader
-                        }
-
-                        homeUI.SetActive(true);
-                        gameUI.SetActive(false);
-                    });
-                }
-                else
-                {
-                    Debug.LogWarning("CrisisManager not found.");
-                    waitingForCrisis = false;
-                    StartSelectedLevel();
-                    RefreshButtons();
-                }
-            }
+            if (triggerWar)
+                StartWarEvent();
             else
-            {
-                Debug.Log("War triggered!");
-                var warManager = FindObjectOfType<WarManager>();
-                if (warManager != null)
-                {
-                    warManager.StartWar(() =>
-                    {
-                        waitingForCrisis = false;
-                        StartSelectedLevel();
-                    });
-                }
-                else
-                {
-                    Debug.LogWarning("WarManager not found.");
-                    waitingForCrisis = false;
-                    StartSelectedLevel();
-                }
-            }
+                StartCrisisEvent();
         }
         else
         {
-            StartSelectedLevel(); // No event
+            StartSelectedLevel();
         }
     }
 
-    void StartSelectedLevel()
+    private void StartCrisisEvent()
     {
-        Debug.Log($"Starting Scenario {GameLoader.currentScenarioIndex + 1}, Level {GameLoader.currentLevelIndex + 1}");
-        homeUI.SetActive(false);
-        gameUI.SetActive(true);
+        CrisisManager manager = FindObjectOfType<CrisisManager>();
 
-        LevelLoader loader = gameUI.GetComponent<LevelLoader>();
-        if (loader != null)
+        if (manager == null)
         {
-            loader.LoadLevel();
+            Debug.LogWarning("CrisisManager not found. Starting level normally.");
+            StartSelectedLevel();
+            return;
         }
-        else
+
+        waitingForCrisis = true;
+
+        if (soundManager != null)
+            soundManager.StartCrisisLoop();
+
+        manager.StartCrisis(() =>
         {
-            Debug.LogError("LevelLoader script missing on GameUI object.");
+            waitingForCrisis = false;
+
+            if (soundManager != null)
+                soundManager.StopCrisisLoop();
+
+            StartSelectedLevel();
+        });
+    }
+
+    private void StartWarEvent()
+    {
+        WarManager manager = FindObjectOfType<WarManager>();
+
+        if (manager == null)
+        {
+            Debug.LogWarning("WarManager not found. Starting level normally.");
+            StartSelectedLevel();
+            return;
         }
+
+        waitingForCrisis = true;
+
+        manager.StartWar(() =>
+        {
+            waitingForCrisis = false;
+            StartSelectedLevel();
+        });
+    }
+
+    private void StartSelectedLevel()
+    {
+        if (GameLoader.currentScenarioLevels.Count == 0 ||
+            GameLoader.currentLevelIndex >= GameLoader.currentScenarioLevels.Count)
+        {
+            isTransitioning = false;
+            SetNavigationInteractable(true);
+            Debug.LogWarning("Cannot start level: no current level data.");
+            return;
+        }
+
+        if (homeUI != null) homeUI.SetActive(false);
+        if (gameUI != null) gameUI.SetActive(true);
+
+        LevelLoader loader = gameUI != null
+            ? gameUI.GetComponent<LevelLoader>()
+            : null;
+
+        if (loader == null)
+        {
+            Debug.LogError("LevelLoader component is missing from GameUI.");
+            isTransitioning = false;
+            SetNavigationInteractable(true);
+            return;
+        }
+
+        isTransitioning = false;
+        loader.LoadLevel();
+    }
+
+    private void SetNavigationInteractable(bool value)
+    {
+        if (continueButton != null)
+            continueButton.interactable = value;
+
+        if (leftArrowButton != null)
+            leftArrowButton.interactable = value && currentStartIndex > 0;
+
+        if (rightArrowButton != null)
+            rightArrowButton.interactable =
+                value && currentStartIndex + pageSize < generatedButtons.Count;
     }
 
     public void RefreshButtons()
     {
+        if (levelButtonContainer == null)
+            return;
+
         foreach (Transform child in levelButtonContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         generatedButtons.Clear();
+
         CreateButtons();
 
-        int flatIndex = (GameLoader.currentScenarioIndex * GameLoader.totalLevelsPerScenario) + GameLoader.currentLevelIndex;
+        int flatIndex =
+            GameLoader.currentScenarioIndex * GameLoader.totalLevelsPerScenario +
+            GameLoader.currentLevelIndex;
+
         currentStartIndex = (flatIndex / pageSize) * pageSize;
+
         ShowPage(currentStartIndex);
+        SetNavigationInteractable(!isTransitioning);
     }
 }
